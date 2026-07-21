@@ -1,0 +1,442 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ceiz.XYZ Landing Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        html, body { 
+            margin: 0; 
+            padding: 0;
+            background: #050505; 
+            font-family: 'Segoe UI', sans-serif; 
+            color: white; 
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        .hero-section { 
+            height: 100vh; 
+            width: 100%; 
+            position: relative; 
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .ui-footer-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%; 
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to top, #050505 60%, transparent);
+            pointer-events: none; 
+        }
+
+        .ui-footer { 
+            text-align: center; 
+            color: #ff0000; 
+            margin-bottom: 20px;
+            pointer-events: auto;
+        }
+
+        .main-title {
+            font-size: 18px; 
+            font-weight: bold;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin: 0;
+            display: inline-block;
+            border-top: 1px solid #440000;
+            padding-top: 8px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); 
+        }
+
+        .sub-text {
+            color: #444;
+            font-size: 12px;
+            letter-spacing: 3px;
+            margin-top: 5px;
+            font-weight: 300;
+        }
+
+        .buy-btn { 
+            padding: 12px 40px; 
+            background: transparent; 
+            color: #ff5500; 
+            border: 1px solid #ff5500;
+            font-weight: bold; 
+            border-radius: 3px; 
+            cursor: pointer; 
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            pointer-events: auto;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .buy-btn:hover { background: #ff5500; color: #000; box-shadow: 0 0 15px #ff5500; }
+
+        .contact-section {
+            min-height: 50vh;
+            padding: 80px 0;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-top: 2px solid #1a1a1a;
+            position: relative;
+            z-index: 20;
+        }
+        .contact-title {
+            font-size: 24px;
+            letter-spacing: 4px;
+            color: #ff5500;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+        .social-icons { display: flex; gap: 50px; }
+        .social-icons a { color: white; font-size: 32px; text-decoration: none; transition: 0.3s; }
+        .social-icons a:hover { color: #ff5500; transform: translateY(-5px); }
+        .icon-box { text-align: center; }
+        .icon-label { font-size: 11px; color: #555; margin-top: 10px; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+    <div class="hero-section">
+        <div id="canvas-container"></div>
+        
+        <div class="ui-footer-container">
+            <div class="ui-footer">
+                <h1 class="main-title">Primum Domain For Sale</h1>
+                <p class="sub-text">HIGH-VALUE DIGITAL ASSET</p>
+            </div>
+            <a href="https://Ceiz.xyz" target="_blank" class="buy-btn">Inquire Now</a>
+        </div>
+    </div>
+
+    <div class="contact-section">
+        <h2 class="contact-title">Contact Us</h2>
+        <div class="social-icons">
+            <div class="icon-box">
+                <a href="https://wa.me/962787459845" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <div class="icon-label">WhatsApp</div>
+            </div>
+            <div class="icon-box">
+                <a href="https://x.com/xosnetwork88" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                <div class="icon-label">X Platform</div>
+            </div>
+            <div class="icon-box">
+                <a href="mailto:xraredomain@gmail.com"><i class="fas fa-envelope"></i></a>
+                <div class="icon-label">Gmail</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'https://cdn.skypack.dev/three@0.132.2';
+        import { OrbitControls } from 'https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js';
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+        const pLight = new THREE.PointLight(0xff5500, 2.5, 50);
+        pLight.position.set(5, 15, 5);
+        scene.add(pLight);
+
+        const pyramidGroup = new THREE.Group();
+        const steps = 9;
+        const baseSize = 10;
+        const stepHeight = 0.5;
+
+        for (let i = 0; i < steps; i++) {
+            const size = baseSize - (i * 1.1);
+            const geo = new THREE.BoxGeometry(size, stepHeight, size);
+            const mat = new THREE.MeshPhongMaterial({ color: 0x111111, flatShading: true });
+            const level = new THREE.Mesh(geo, mat);
+            level.position.y = i * stepHeight;
+            pyramidGroup.add(level);
+
+            const edges = new THREE.LineSegments(
+                new THREE.EdgesGeometry(geo),
+                new THREE.LineBasicMaterial({ color: 0xff5500, opacity: 0.25, transparent: true })
+            );
+            edges.position.copy(level.position);
+            pyramidGroup.add(edges);
+        }
+
+        const temple = new THREE.Mesh(
+            new THREE.BoxGeometry(1.4, 0.8, 1.4),
+            new THREE.MeshPhongMaterial({ color: 0x222222 })
+        );
+        temple.position.y = steps * stepHeight;
+        pyramidGroup.add(temple);
+
+        // --- شعلة النار ---
+        const flameGroup = new THREE.Group();
+        const flameGeo = new THREE.ConeGeometry(0.9, 3.2, 16, 8);
+        flameGeo.translate(0, 1.6, 0);
+        const flameMat = new THREE.MeshBasicMaterial({
+            color: 0xff3300,
+            transparent: true,
+            opacity: 0.5,
+            wireframe: true
+        });
+        const flameMesh = new THREE.Mesh(flameGeo, flameMat);
+        flameGroup.add(flameMesh);
+
+        // --- الجوهرة داخل الشعلة (3D Gem/Diamond) ---
+        const gemGeo = new THREE.OctahedronGeometry(0.45, 0);
+        const gemMat = new THREE.MeshPhongMaterial({
+            color: 0xffcc00,
+            emissive: 0xff4400,
+            emissiveIntensity: 0.8,
+            shininess: 100,
+            flatShading: true,
+            transparent: true,
+            opacity: 0.95
+        });
+        const gemMesh = new THREE.Mesh(gemGeo, gemMat);
+        gemMesh.position.set(0, 1.2, 0);
+        flameGroup.add(gemMesh);
+
+        // إضافة إطار بلوري للجوهرة يمنحها مظهر ثرياً
+        const gemWire = new THREE.LineSegments(
+            new THREE.EdgesGeometry(gemGeo),
+            new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.8, transparent: true })
+        );
+        gemMesh.add(gemWire);
+
+        const flameLight = new THREE.PointLight(0xff6600, 3.5, 12);
+        flameLight.position.set(0, 1.2, 0);
+        flameGroup.add(flameLight);
+
+        // --- رسم حلقة النص 3D ---
+        function createCircularTextTexture() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 2048; 
+            canvas.height = 256;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            const part1 = "CEIZ.XYZ ";
+            const part2 = "- DOMAIN FOR SALE -";
+            
+            ctx.font = '900 130px "Arial Black", Arial, sans-serif';
+            
+            const w1 = ctx.measureText(part1).width;
+            const w2 = ctx.measureText(part2).width;
+            const totalWidth = w1 + w2;
+            const startX = (2048 - totalWidth) / 2;
+            const ceizCenterX = startX + (w1 / 2);
+
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 22;
+            ctx.strokeText(part1 + part2, 1024, 128);
+
+            ctx.shadowColor = '#ff2200';
+            ctx.shadowBlur = 60;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            ctx.fillStyle = '#ff3300';
+            ctx.fillText(part1, ceizCenterX, 128);
+
+            ctx.shadowColor = '#ffaa00';
+            ctx.shadowBlur = 30;
+            ctx.fillText(part1, ceizCenterX, 128);
+
+            const fireGrad = ctx.createLinearGradient(ceizCenterX - (w1 / 2), 60, ceizCenterX + (w1 / 2), 180);
+            fireGrad.addColorStop(0, '#ffffff');  
+            fireGrad.addColorStop(0.3, '#ffea00'); 
+            fireGrad.addColorStop(0.7, '#ff5500'); 
+            fireGrad.addColorStop(1, '#ff0000');   
+
+            ctx.shadowColor = '#ffffaa';
+            ctx.shadowBlur = 12;
+            ctx.fillStyle = fireGrad;
+            ctx.fillText(part1, ceizCenterX, 128);
+
+            ctx.shadowColor = '#ff3300';
+            ctx.shadowBlur = 20;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(part2, startX + w1 + (w2 / 2), 128);
+            
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        const textTexture = createCircularTextTexture();
+        textTexture.wrapS = THREE.RepeatWrapping;
+        textTexture.repeat.set(1, 1);
+
+        const ringGeo = new THREE.CylinderGeometry(2.5, 2.5, 1.1, 64, 1, true);
+        const ringMat = new THREE.MeshBasicMaterial({
+            map: textTexture,
+            transparent: true,
+            side: THREE.DoubleSide,
+            depthWrite: false
+        });
+        const textRing = new THREE.Mesh(ringGeo, ringMat);
+        textRing.position.set(0, -0.55, 0);
+        flameGroup.add(textRing);
+
+        const flameY = (steps * stepHeight) + 0.4;
+        flameGroup.position.set(0, flameY, 0);
+        pyramidGroup.add(flameGroup);
+
+        // --- الأشخاص المتسلقين والساقطين ---
+        function createClimberPerson() {
+            const climberGroup = new THREE.Group();
+            const mat = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
+
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), mat);
+            head.position.y = 0.45;
+            climberGroup.add(head);
+
+            const body = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.35), mat);
+            body.position.y = 0.22;
+            climberGroup.add(body);
+
+            const arm1 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.25), mat);
+            arm1.position.set(0.08, 0.3, 0);
+            arm1.rotation.z = -Math.PI / 4;
+            climberGroup.add(arm1);
+
+            const arm2 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.25), mat);
+            arm2.position.set(-0.08, 0.3, 0);
+            arm2.rotation.z = Math.PI / 4;
+            climberGroup.add(arm2);
+
+            const leg1 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.25), mat);
+            leg1.position.set(0.06, 0.05, 0);
+            leg1.rotation.z = -Math.PI / 6;
+            climberGroup.add(leg1);
+
+            const leg2 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.25), mat);
+            leg2.position.set(-0.06, 0.05, 0);
+            leg2.rotation.z = Math.PI / 6;
+            climberGroup.add(leg2);
+
+            return climberGroup;
+        }
+
+        const climbers = [];
+        const angles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
+
+        angles.forEach((angle, index) => {
+            const climber = createClimberPerson();
+            pyramidGroup.add(climber);
+            climbers.push({
+                mesh: climber,
+                angle: angle,
+                progress: Math.random() * 0.6,
+                speed: 0.12 + Math.random() * 0.08,
+                isFalling: false,
+                fallSpeed: 0,
+                delay: index * 1.5
+            });
+        });
+
+        scene.add(pyramidGroup);
+        scene.add(new THREE.GridHelper(40, 30, 0x111111, 0x111111));
+
+        camera.position.set(15, 10, 18);
+        
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.6;
+        controls.enableZoom = false;
+
+        let clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            const time = clock.getElapsedTime();
+            
+            // حركة ذبذبة الشعلة
+            flameMesh.rotation.y = time * 1.5;
+            flameMesh.scale.x = 1 + Math.sin(time * 6) * 0.08;
+            flameMesh.scale.z = 1 + Math.cos(time * 6) * 0.08;
+            flameMesh.scale.y = 1 + Math.sin(time * 8) * 0.1;
+            flameLight.intensity = 3 + Math.sin(time * 12) * 0.8;
+
+            // دوران وطوفان الجوهرة داخل الشعلة
+            gemMesh.rotation.y = time * 1.2;
+            gemMesh.rotation.x = Math.sin(time * 2) * 0.2;
+            gemMesh.position.y = 1.2 + Math.sin(time * 3) * 0.1;
+
+            // دوران حلقة النص
+            textRing.rotation.y = -time * 0.4;
+
+            // تحريك الأشخاص (تسلق وسقوط)
+            climbers.forEach((c) => {
+                if (!c.isFalling) {
+                    c.progress += c.speed * delta;
+                    if (c.progress > 0.72) {
+                        c.isFalling = true;
+                        c.fallSpeed = 0.5;
+                    }
+                } else {
+                    c.progress -= c.fallSpeed * delta;
+                    c.mesh.rotation.x += 10 * delta;
+                    c.mesh.rotation.z += 8 * delta;
+
+                    if (c.progress <= 0) {
+                        c.progress = 0;
+                        c.isFalling = false;
+                        c.mesh.rotation.x = 0;
+                        c.mesh.rotation.z = 0;
+                    }
+                }
+
+                const currentStep = c.progress * (steps * stepHeight);
+                const currentRadius = (baseSize / 2) - (c.progress * 3.8);
+
+                c.mesh.position.x = Math.cos(c.angle) * currentRadius;
+                c.mesh.position.z = Math.sin(c.angle) * currentRadius;
+                c.mesh.position.y = currentStep;
+
+                if (!c.isFalling) {
+                    c.mesh.rotation.y = -c.angle + Math.PI / 2;
+                    c.mesh.rotation.x = -0.3;
+                }
+            });
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
+
+```
