@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,7 +36,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 30%; 
+            height: 35%; /* تمت زيادة الارتفاع قليلاً ليتسع للنصوص المكبرة */
             z-index: 10;
             display: flex;
             flex-direction: column;
@@ -50,37 +49,39 @@
         .ui-footer { 
             text-align: center; 
             color: #ff0000; 
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             pointer-events: auto;
+            width: 90%; /* لضمان عدم خروج النص في الشاشات الصغيرة */
         }
 
         .main-title {
-            font-size: 18px; 
+            font-size: 26px; /* تكبير العنوان من 18px إلى 26px للموبايل */
             font-weight: bold;
-            letter-spacing: 5px;
+            letter-spacing: 4px;
             text-transform: uppercase;
             margin: 0;
             display: inline-block;
             border-top: 1px solid #440000;
-            padding-top: 8px;
+            padding-top: 10px;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); 
         }
 
         .sub-text {
-            color: #444;
-            font-size: 12px;
+            color: #888; /* تعديل اللون قليلاً لزيادة وضوح النص الفرعي */
+            font-size: 14px; /* تكبير النص الفرعي من 12px إلى 14px */
             letter-spacing: 3px;
-            margin-top: 5px;
-            font-weight: 300;
+            margin-top: 8px;
+            font-weight: bold; /* تعديل السمك ليصبح أوضح للقراءة */
         }
 
         .buy-btn { 
-            padding: 12px 40px; 
+            padding: 16px 50px; /* تكبير الحشوة الداخلية للزر ليكون أضخم وأسهل للمس */
             background: transparent; 
             color: #ff5500; 
-            border: 1px solid #ff5500;
+            border: 2px solid #ff5500; /* زيادة سمك إطار الزر */
             font-weight: bold; 
-            border-radius: 3px; 
+            font-size: 18px; /* تكبير حجم خط الزر */
+            border-radius: 5px; 
             cursor: pointer; 
             transition: 0.3s;
             text-transform: uppercase;
@@ -88,8 +89,16 @@
             pointer-events: auto;
             text-decoration: none;
             display: inline-block;
+            box-shadow: 0 0 10px rgba(255, 85, 0, 0.2); /* إضافة توهج خفيف افتراضي */
         }
-        .buy-btn:hover { background: #ff5500; color: #000; box-shadow: 0 0 15px #ff5500; }
+        .buy-btn:hover { background: #ff5500; color: #000; box-shadow: 0 0 20px #ff5500; }
+
+        /* تعديلات خاصة بالشاشات الكبيرة (الكمبيوتر) حتى يظل التنسيق متناسقاً ولا يخرب */
+        @media (min-width: 768px) {
+            .main-title { font-size: 36px; letter-spacing: 6px; }
+            .sub-text { font-size: 16px; }
+            .buy-btn { font-size: 20px; padding: 18px 60px; }
+        }
 
         .contact-section {
             min-height: 50vh;
@@ -236,207 +245,4 @@
         function createCircularTextTexture() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = 2048; 
-            canvas.height = 256;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
-            const part1 = "CEIZ.XYZ ";
-            const part2 = "- DOMAIN FOR SALE -";
-            
-            ctx.font = '900 130px "Arial Black", Arial, sans-serif';
-            
-            const w1 = ctx.measureText(part1).width;
-            const w2 = ctx.measureText(part2).width;
-            const totalWidth = w1 + w2;
-            const startX = (2048 - totalWidth) / 2;
-            const ceizCenterX = startX + (w1 / 2);
-
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 22;
-            ctx.strokeText(part1 + part2, 1024, 128);
-
-            ctx.shadowColor = '#ff2200';
-            ctx.shadowBlur = 60;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
-            ctx.fillStyle = '#ff3300';
-            ctx.fillText(part1, ceizCenterX, 128);
-
-            ctx.shadowColor = '#ffaa00';
-            ctx.shadowBlur = 30;
-            ctx.fillText(part1, ceizCenterX, 128);
-
-            const fireGrad = ctx.createLinearGradient(ceizCenterX - (w1 / 2), 60, ceizCenterX + (w1 / 2), 180);
-            fireGrad.addColorStop(0, '#ffffff');  
-            fireGrad.addColorStop(0.3, '#ffea00'); 
-            fireGrad.addColorStop(0.7, '#ff5500'); 
-            fireGrad.addColorStop(1, '#ff0000');   
-
-            ctx.shadowColor = '#ffffaa';
-            ctx.shadowBlur = 12;
-            ctx.fillStyle = fireGrad;
-            ctx.fillText(part1, ceizCenterX, 128);
-
-            ctx.shadowColor = '#ff3300';
-            ctx.shadowBlur = 20;
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText(part2, startX + w1 + (w2 / 2), 128);
-            
-            return new THREE.CanvasTexture(canvas);
-        }
-
-        const textTexture = createCircularTextTexture();
-        textTexture.wrapS = THREE.RepeatWrapping;
-        textTexture.repeat.set(1, 1);
-
-        const ringGeo = new THREE.CylinderGeometry(2.5, 2.5, 1.1, 64, 1, true);
-        const ringMat = new THREE.MeshBasicMaterial({
-            map: textTexture,
-            transparent: true,
-            side: THREE.DoubleSide,
-            depthWrite: false
-        });
-        const textRing = new THREE.Mesh(ringGeo, ringMat);
-        textRing.position.set(0, -0.55, 0);
-        flameGroup.add(textRing);
-
-        const flameY = (steps * stepHeight) + 0.4;
-        flameGroup.position.set(0, flameY, 0);
-        pyramidGroup.add(flameGroup);
-
-        // --- الأشخاص المتسلقين والساقطين ---
-        function createClimberPerson() {
-            const climberGroup = new THREE.Group();
-            const mat = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
-
-            const head = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), mat);
-            head.position.y = 0.45;
-            climberGroup.add(head);
-
-            const body = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.35), mat);
-            body.position.y = 0.22;
-            climberGroup.add(body);
-
-            const arm1 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.25), mat);
-            arm1.position.set(0.08, 0.3, 0);
-            arm1.rotation.z = -Math.PI / 4;
-            climberGroup.add(arm1);
-
-            const arm2 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.25), mat);
-            arm2.position.set(-0.08, 0.3, 0);
-            arm2.rotation.z = Math.PI / 4;
-            climberGroup.add(arm2);
-
-            const leg1 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.25), mat);
-            leg1.position.set(0.06, 0.05, 0);
-            leg1.rotation.z = -Math.PI / 6;
-            climberGroup.add(leg1);
-
-            const leg2 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.25), mat);
-            leg2.position.set(-0.06, 0.05, 0);
-            leg2.rotation.z = Math.PI / 6;
-            climberGroup.add(leg2);
-
-            return climberGroup;
-        }
-
-        const climbers = [];
-        const angles = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2];
-
-        angles.forEach((angle, index) => {
-            const climber = createClimberPerson();
-            pyramidGroup.add(climber);
-            climbers.push({
-                mesh: climber,
-                angle: angle,
-                progress: Math.random() * 0.6,
-                speed: 0.12 + Math.random() * 0.08,
-                isFalling: false,
-                fallSpeed: 0,
-                delay: index * 1.5
-            });
-        });
-
-        scene.add(pyramidGroup);
-        scene.add(new THREE.GridHelper(40, 30, 0x111111, 0x111111));
-
-        camera.position.set(15, 10, 18);
         
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.6;
-        controls.enableZoom = false;
-
-        let clock = new THREE.Clock();
-        function animate() {
-            requestAnimationFrame(animate);
-            const delta = clock.getDelta();
-            const time = clock.getElapsedTime();
-            
-            // حركة ذبذبة الشعلة
-            flameMesh.rotation.y = time * 1.5;
-            flameMesh.scale.x = 1 + Math.sin(time * 6) * 0.08;
-            flameMesh.scale.z = 1 + Math.cos(time * 6) * 0.08;
-            flameMesh.scale.y = 1 + Math.sin(time * 8) * 0.1;
-            flameLight.intensity = 3 + Math.sin(time * 12) * 0.8;
-
-            // دوران وطوفان الجوهرة داخل الشعلة
-            gemMesh.rotation.y = time * 1.2;
-            gemMesh.rotation.x = Math.sin(time * 2) * 0.2;
-            gemMesh.position.y = 1.2 + Math.sin(time * 3) * 0.1;
-
-            // دوران حلقة النص
-            textRing.rotation.y = -time * 0.4;
-
-            // تحريك الأشخاص (تسلق وسقوط)
-            climbers.forEach((c) => {
-                if (!c.isFalling) {
-                    c.progress += c.speed * delta;
-                    if (c.progress > 0.72) {
-                        c.isFalling = true;
-                        c.fallSpeed = 0.5;
-                    }
-                } else {
-                    c.progress -= c.fallSpeed * delta;
-                    c.mesh.rotation.x += 10 * delta;
-                    c.mesh.rotation.z += 8 * delta;
-
-                    if (c.progress <= 0) {
-                        c.progress = 0;
-                        c.isFalling = false;
-                        c.mesh.rotation.x = 0;
-                        c.mesh.rotation.z = 0;
-                    }
-                }
-
-                const currentStep = c.progress * (steps * stepHeight);
-                const currentRadius = (baseSize / 2) - (c.progress * 3.8);
-
-                c.mesh.position.x = Math.cos(c.angle) * currentRadius;
-                c.mesh.position.z = Math.sin(c.angle) * currentRadius;
-                c.mesh.position.y = currentStep;
-
-                if (!c.isFalling) {
-                    c.mesh.rotation.y = -c.angle + Math.PI / 2;
-                    c.mesh.rotation.x = -0.3;
-                }
-            });
-
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
-</body>
-</html>
-
-```
